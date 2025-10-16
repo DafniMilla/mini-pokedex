@@ -1,87 +1,114 @@
-import { useEffect, useState } from "react";
+// app/pokemons/index.tsx
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import { useRouter } from "expo-router";
 
+// Interface do Pokémon
 interface Pokemon {
   name: string;
   url: string;
 }
 
-interface PokemonResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Pokemon[];
-}
-
-export default function Lista() {
-  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [nextUrl, setNextUrl] = useState<string | null>(null);
-  const [prevUrl, setPrevUrl] = useState<string | null>(null);
+export default function PokemonList() {
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
+  const [offset, setOffset] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
+  const router = useRouter();
 
+  // Carregar pokémons da API
+  useEffect(() => {
+    fetchPokemons();
+  }, [offset]);
 
-async function loadPage(limit = 20, offset = 0) {
-  try {
-    setLoading(true);
-    setError(null);
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
-    if (!res.ok) throw new Error('Erro ao buscar lista');
-    const data = await res.json(); // data.results é o array de { name, url }
-    setPokemonList(data.results);
-    setNextUrl(data.next);
-    setPrevUrl(data.previous);
-  } catch (e) {
-    setError('Não foi possível carregar a lista. Tentar novamente?');
-  } finally {
-    setLoading(false);
-  }
-}
-useEffect(() => {
-    loadPage();
-  }, []);
-
-
-  const handleNavigation = (url: string | null) => {
-    if (!url) return;
-    const parsedUrl = new URL(url);
-    const offset = Number(parsedUrl.searchParams.get("offset")) || 0;
-    const limit = Number(parsedUrl.searchParams.get("limit")) || 20;
-    loadPage(limit, offset);
+  const fetchPokemons = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
+      const data = await response.json();
+      setPokemons(data.results);
+    } catch (error) {
+      console.error("Erro ao carregar pokémons:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Filtrar pokémons pelo nome
+  useEffect(() => {
+    setFilteredPokemons(
+      pokemons.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, pokemons]);
+
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Lista de Pokémons</h1>
+    <View style={styles.container}>
+      {/* Barra de pesquisa */}
+      <TextInput
+        style={styles.input}
+        placeholder="Pesquisar Pokémon..."
+        value={search}
+        onChangeText={setSearch}
+      />
 
-      {loading && <p>Carregando...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      <Text style={styles.title}>Pokémons</Text>
 
-      <ul className="list-disc pl-5">
-        {pokemonList.map((pokemon) => (
-          <li key={pokemon.name} className="capitalize">
-            {pokemon.name}
-          </li>
-        ))}
-      </ul>
+      {/* Lista de Pokémon */}
+      <FlatList
+        data={filteredPokemons} // <-- Usar lista filtrada
+        keyExtractor={(item) => item.name}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => router.push({ pathname: "/detalhes/[id]", params: { name: item.name } })}
+          >
+            <Text style={styles.name}>{item.name.toUpperCase()}</Text>
+          </TouchableOpacity>
+        )}
+      />
 
-      <div className="flex gap-4 mt-4">
-        <button
-          className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
-          disabled={!prevUrl || loading}
-          onClick={() => handleNavigation(prevUrl)}
-        >
-          Anterior
-        </button>
+      {/* Paginação */}
+      <View style={styles.pagination}>
+        <Button
+          title="Anterior"
+          onPress={() => setOffset(Math.max(0, offset - 20))}
+          disabled={offset === 0}
+        />
+        <Button title="Próxima" onPress={() => setOffset(offset + 20)} />
+      </View>
 
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
-          disabled={!nextUrl || loading}
-          onClick={() => handleNavigation(nextUrl)}
-        >
-          Próximo
-        </button>
-      </div>
-    </div>
+      {/* Loading */}
+      {loading && <Text style={styles.loading}>Carregando...</Text>}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 10 },
+  input: { 
+    height: 40, 
+    borderColor: '#ccc', 
+    borderWidth: 1, 
+    borderRadius: 8, 
+    paddingHorizontal: 10, 
+    marginBottom: 16 
+  },
+  item: {
+    padding: 15,
+    backgroundColor: "#f1f1f1",
+    marginBottom: 8,
+    borderRadius: 10,
+  },
+  name: { fontSize: 16, textTransform: "capitalize" },
+  pagination: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  loading: { textAlign: "center", marginTop: 10 },
+});
