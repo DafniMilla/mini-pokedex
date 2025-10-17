@@ -98,11 +98,11 @@ export default function PokemonList() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { flex: 1, padding: 20 , backgroundColor:"#bdbdbdff"},
   title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 10 , color:"#af0000ff"},
   input: { 
     height:80, 
-    borderColor: '#000000ff', 
+    borderColor: '"#af0000ff"', 
     borderWidth: 1, 
     borderRadius: 8, 
     paddingHorizontal: 10, 
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   home:{},
   botaoPagina: {
     padding: 10,
-    backgroundColor: "#af0000ff",
+    backgroundColor: "c",
     borderRadius: 8,
   },
   textoBotao: {
