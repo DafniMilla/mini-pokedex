@@ -1,14 +1,14 @@
 // app/pokemons/index.tsx
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import { View, Text, FlatList, Button, TouchableOpacity, TextInput } from "react-native";
 import { useRouter } from "expo-router";
-
-// Interface do Pokémon
+import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native"; 
+// define o formato esperado
 interface Pokemon {
   name: string;
   url: string;
 }
-
 export default function PokemonList() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
@@ -18,7 +18,8 @@ export default function PokemonList() {
 
   const router = useRouter();
 
-  // Carregar pokémons da API
+
+  //roda sempre que offset muda (para paginação) Chama a função fetchPokemons.
   useEffect(() => {
     fetchPokemons();
   }, [offset]);
@@ -36,7 +37,7 @@ export default function PokemonList() {
     }
   };
 
-  // Filtrar pokémons pelo nome
+  //filtra pokemons pelo nome
   useEffect(() => {
     setFilteredPokemons(
       pokemons.filter(p =>
@@ -47,7 +48,13 @@ export default function PokemonList() {
 
   return (
     <View style={styles.container}>
-      {/* Barra de pesquisa */}
+      <TouchableOpacity
+        style={styles.home}
+        onPress={() => router.push("/")}
+      >
+        <Ionicons name="home" size={28} color="#af0000ff" />
+      </TouchableOpacity>
+
       <TextInput
         style={styles.input}
         placeholder="Pesquisar Pokémon..."
@@ -57,9 +64,8 @@ export default function PokemonList() {
 
       <Text style={styles.title}>Pokémons</Text>
 
-      {/* Lista de Pokémon */}
       <FlatList
-        data={filteredPokemons} // <-- Usar lista filtrada
+        data={filteredPokemons}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -71,32 +77,37 @@ export default function PokemonList() {
         )}
       />
 
-      {/* Paginação */}
       <View style={styles.pagination}>
-        <Button
-          title="Anterior"
+        <TouchableOpacity
+          style={[styles.botaoPagina, offset === 0 && { opacity: 0.5 }]}
           onPress={() => setOffset(Math.max(0, offset - 20))}
           disabled={offset === 0}
-        />
-        <Button title="Próxima" onPress={() => setOffset(offset + 20)} />
-      </View>
+        >
+          <Text style={styles.textoBotao}>◀ Anterior</Text>
+        </TouchableOpacity>
 
-      {/* Loading */}
-      {loading && <Text style={styles.loading}>Carregando...</Text>}
+        <TouchableOpacity
+          style={styles.botaoPagina}
+          onPress={() => setOffset(offset + 20)}
+        >
+          <Text style={styles.textoBotao}>Próxima ▶</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 10 },
+  title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 10 , color:"#af0000ff"},
   input: { 
-    height: 40, 
-    borderColor: '#ccc', 
+    height:80, 
+    borderColor: '#000000ff', 
     borderWidth: 1, 
     borderRadius: 8, 
     paddingHorizontal: 10, 
-    marginBottom: 16 
+    marginBottom: 16, 
+    marginTop:23
   },
   item: {
     padding: 15,
@@ -111,4 +122,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   loading: { textAlign: "center", marginTop: 10 },
+  home:{},
+  botaoPagina: {
+    padding: 10,
+    backgroundColor: "#af0000ff",
+    borderRadius: 8,
+  },
+  textoBotao: {
+    color: "#fff",
+    fontWeight: "bold",
+  }
 });
