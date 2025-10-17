@@ -1,50 +1,50 @@
-# Welcome to your Expo app 👋
+# Mini Pokédex - React Native
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Uma **mini Pokédex** construída com **React Native** e **Expo Router**, consumindo a **PokéAPI**.  
+Permite listar Pokémon, pesquisar por nome, navegar entre páginas e ver detalhes de cada Pokémon.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Tecnologias
 
-   ```bash
-   npm install
-   ```
+- **React Native**
+  
+- **Expo Router**
+  
+- **TypeScript**
+  
+- **PokéAPI** (https://pokeapi.co)
+  
+- **Ionicons** para ícones
+  
+- **FlatList** para listagem eficiente
 
-2. Start the app
+## ⚡ Funcionalidades
 
-   ```bash
-   npx expo start
-   ```
+1. Listagem de Pokémon com paginação de 20 em 20.
+   
+2. Barra de pesquisa para filtrar Pokémon pelo nome.
+   
+3. Botão de **Home** para voltar à tela inicial.
 
-In the output, you'll find options to open the app in a
+4. Tela de detalhes do Pokémon com:
+   - Nome
+     
+   - Imagem
+     
+   - Altura e Peso
+   
+6. Botão de **voltar** para retornar à lista.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 💻 Instalação
 
-## Get a fresh project
+1. Clone o repositório: ``git clone https://github.com/DafniMilla/mini-pokedex.git``
 
-When you're ready, run:
+2. ``cd mini-pokedex``
+   
+3. Instale as dependências: ``npm install`` ou ``yarn install``
 
-```bash
-npm run reset-project
-```
+4. Inicie o projeto: ``npm start``
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
