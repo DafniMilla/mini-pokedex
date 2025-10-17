@@ -107,7 +107,8 @@ export default function PokemonDetailScreen() {
           <View key={s.stat.name} style={styles.statRow}>
             <Text style={styles.statName}>{s.stat.name.toUpperCase()}</Text>
             <View style={styles.statBar}>
-              <View style={[styles.statFill, { width: `${Math.min(s.base_stat, 100)}%` }]} />
+              {/*barra de progresso*/}
+              <View style={[styles.statFill, { width: `${Math.min(s.base_stat, 100)}%` }]} /> 
             </View>
             <Text style={styles.statValue}>{s.base_stat}</Text>
           </View>
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   },
   statFill: {
     height: "100%",
-    backgroundColor: "#d62828",
+    backgroundColor: "#a9ff47ff",
     borderRadius: 8,
   },
   statValue: {
